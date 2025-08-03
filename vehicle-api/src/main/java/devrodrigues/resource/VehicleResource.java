@@ -1,6 +1,7 @@
 package devrodrigues.resource;
 
 import devrodrigues.dto.CreateVehicleRequest;
+import devrodrigues.dto.VehicleResponse;
 import devrodrigues.model.Vehicle;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -21,14 +22,21 @@ public class VehicleResource {
 
         vehicle.persist();
 
-        return Response.status(Response.Status.CREATED.getStatusCode()).entity(vehicle).build();
+        //usando dto para não expor a entidade Vehicle
+        VehicleResponse vehicleResponse = new VehicleResponse(vehicle);
+
+        return Response.status(Response.Status.CREATED.getStatusCode()).entity(vehicleResponse).build();
 
     }
 
     @GET
     public Response getAll(){
     //consultar veículos da frota com seus detalhes e status
-        List<Vehicle> list = Vehicle.listAll();
+
+        List<VehicleResponse> list = Vehicle.listAll().stream()
+                .map(v -> new VehicleResponse((Vehicle) v))
+                .toList();
+
 
         return Response.ok(list).build();
     }
@@ -42,7 +50,7 @@ public class VehicleResource {
         Optional<Vehicle> vehicle = Vehicle.findByIdOptional(id);
 
         if (vehicle.isPresent()) {
-            return Response.ok(vehicle).build();
+            return Response.ok(new VehicleResponse((vehicle.get()))).build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
