@@ -80,15 +80,20 @@ public class VehicleResource {
     @DELETE
     @Path("/{id}")
     @Transactional
-    public Response deleteById(@PathParam("id") Long id){
-        //veículo não pode ser removido se tiver como alugado
-
+    public Response deleteById(@PathParam("id") Long id) {
         Vehicle vehicle = Vehicle.findById(id);
 
-        if(vehicle.getStatus() != VehicleStatus.RENTED){
-            Vehicle.deleteById(id);
-            return Response.noContent().build();
-        } else {
+        if (vehicle == null) {
+            // Retorna 404 se não encontrado
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(Map.of(
+                            "error", "NOT_FOUND",
+                            "message", "Veículo não encontrado."
+                    )).build();
+        }
+
+        if (vehicle.getStatus() == VehicleStatus.RENTED) {
+            // Retorna 409 se veículo estiver alugado
             return Response.status(Response.Status.CONFLICT)
                     .entity(Map.of(
                             "error", "CONFLICT",
@@ -96,6 +101,9 @@ public class VehicleResource {
                     )).build();
         }
 
+        // Se chegou aqui, pode deletar
+        vehicle.delete();
+        return Response.noContent().build(); // 204 No Content
     }
 
 }
