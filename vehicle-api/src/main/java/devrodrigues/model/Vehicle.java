@@ -1,5 +1,6 @@
 package devrodrigues.model;
 
+import devrodrigues.dto.UpdateVehicleRequest;
 import devrodrigues.model.enums.VehicleStatus;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
@@ -40,6 +41,24 @@ public class Vehicle extends PanacheEntityBase {
             throw new IllegalStateException(
                     String.format("Um veículo com status %s não pode mudar para o status %s", this.status, newStatus)
             );
+        }
+    }
+
+    public void updateFromRequest(UpdateVehicleRequest request) {
+        if (request.brand() != null) {
+            this.brand = request.brand();
+        }
+        if (request.model() != null) {
+            this.model = request.model();
+        }
+        if (request.year() != null) {
+            this.year = request.year();
+        }
+        if (request.engine() != null) {
+            this.engine = request.engine();
+        }
+        if (request.status() != null) {
+            this.changeStatus(VehicleStatus.valueOf(String.valueOf(request.status())));
         }
     }
 

@@ -1,6 +1,7 @@
 package devrodrigues.resource;
 
 import devrodrigues.dto.CreateVehicleRequest;
+import devrodrigues.dto.UpdateVehicleRequest;
 import devrodrigues.dto.VehicleResponse;
 import devrodrigues.model.Vehicle;
 import jakarta.transaction.Transactional;
@@ -56,17 +57,23 @@ public class VehicleResource {
         }
     }
 
-    /*
+
     @PATCH()
     @Path("/{id}")
     @Transactional
-    public Response updateById(@PathParam("id") Long id, CreateVehicleRequest userRequest){
+    public Response updateById(@PathParam("id") Long id, UpdateVehicleRequest userRequest){
         //atualizar atributos + status
 
-        Vehicle vehicle = Vehicle.findById(userRequest);
+        Vehicle vehicle = Vehicle.findById(id);
 
+        if(vehicle!=null){
+            vehicle.updateFromRequest(userRequest);
+            return Response.ok(new VehicleResponse(vehicle)).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
     }
-     */
+
 
     @DELETE
     @Path("/{id}")
