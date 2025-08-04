@@ -6,6 +6,7 @@ import devrodrigues.dto.VehicleResponse;
 import devrodrigues.model.Vehicle;
 import devrodrigues.model.enums.VehicleStatus;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
@@ -18,7 +19,7 @@ public class VehicleResource {
 
     @POST
     @Transactional
-    public Response create(CreateVehicleRequest userRequest){
+    public Response create(@Valid CreateVehicleRequest userRequest){
 
         Vehicle vehicle = new Vehicle(
                 userRequest.brand(), userRequest.model(), userRequest.year(), userRequest.engine());
