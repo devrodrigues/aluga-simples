@@ -69,8 +69,16 @@ public class VehicleResource {
         Vehicle vehicle = Vehicle.findById(id);
 
         if(vehicle!=null){
-            vehicle.updateFromRequest(userRequest);
-            return Response.ok(new VehicleResponse(vehicle)).build();
+            try{
+                vehicle.updateFromRequest(userRequest);
+                return Response.ok(new VehicleResponse(vehicle)).build();
+            } catch(IllegalStateException e) {
+                return Response.status(Response.Status.CONFLICT)
+                        .entity(Map.of(
+                                "error", "CONFLICT",
+                                "message", e.getMessage()
+                        )).build();
+            }
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
