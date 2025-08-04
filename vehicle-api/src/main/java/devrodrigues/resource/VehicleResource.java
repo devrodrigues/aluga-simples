@@ -4,11 +4,13 @@ import devrodrigues.dto.CreateVehicleRequest;
 import devrodrigues.dto.UpdateVehicleRequest;
 import devrodrigues.dto.VehicleResponse;
 import devrodrigues.model.Vehicle;
+import devrodrigues.model.enums.VehicleStatus;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Path("/vehicles")
@@ -79,10 +81,20 @@ public class VehicleResource {
     @Path("/{id}")
     @Transactional
     public Response deleteById(@PathParam("id") Long id){
-        //veículo não pode ser removido se tiver como alugado[
+        //veículo não pode ser removido se tiver como alugado
 
-        Vehicle.deleteById(id);
-        return Response.noContent().build();
+        Vehicle vehicle = Vehicle.findById(id);
+
+        if(vehicle.getStatus() != VehicleStatus.RENTED){
+            Vehicle.deleteById(id);
+            return Response.noContent().build();
+        } else {
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(Map.of(
+                            "error", "CONFLICT",
+                            "message", "O veículo não pode ser deletado pois está alugado no momento."
+                    )).build();
+        }
 
     }
 
