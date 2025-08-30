@@ -52,6 +52,11 @@ public class Booking extends PanacheEntityBase {
         }
     }
 
+    public void changeStatus(BookingStatus newStatus) {
+        this.status = this.status.transitionTo(newStatus);
+    }
+
+
     public Long getVehicleId() {
         return vehicleId;
     }

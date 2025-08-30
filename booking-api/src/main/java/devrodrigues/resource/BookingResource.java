@@ -31,11 +31,7 @@ public class BookingResource {
                 bookingDTO.endDate()
         );
 
-        boolean created = service.createBooking(booking).isPersistent();
-
-        if (!created) {
-            throw new BookingCreatedException("Não foi possível criar a reserva.", Response.Status.CONFLICT);
-        }
+        service.createBooking(booking).isPersistent();
 
         return Response.status(Response.Status.CREATED).entity(bookingDTO).build();
     }
@@ -57,7 +53,7 @@ public class BookingResource {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        return Response.ok().build();
+        return Response.ok(booking).build();
     }
 
     @GET

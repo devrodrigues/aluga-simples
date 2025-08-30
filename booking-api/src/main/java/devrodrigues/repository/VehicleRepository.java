@@ -13,7 +13,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface VehicleRepository {
 
     @GET
-    @Path("/api/vehicles/{vehicleId}")
+    @Path("/vehicles/{vehicleId}")
     Vehicle findVehicleById(@PathParam("vehicleId") Long id);
 
     @ClientExceptionMapper

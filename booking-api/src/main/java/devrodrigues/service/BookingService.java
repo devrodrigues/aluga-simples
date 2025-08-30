@@ -62,7 +62,8 @@ public class BookingService {
             throw new IllegalStateException("reserva já cancelada ou finalizada");
         }
 
-        //altera status;
+        booking.changeStatus(newStatus);
+
         return booking;
 
     }
