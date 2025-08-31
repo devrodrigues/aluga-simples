@@ -5,6 +5,7 @@ import devrodrigues.dto.UpdateVehicleRequest;
 import devrodrigues.dto.VehicleResponse;
 import devrodrigues.model.Vehicle;
 import devrodrigues.model.enums.VehicleStatus;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -18,6 +19,7 @@ import java.util.Optional;
 public class VehicleResource {
 
     @POST
+    @RolesAllowed({"ADMIN", "FUNCIONARIO"})
     @Transactional
     public Response create(@Valid CreateVehicleRequest userRequest){
 
@@ -34,6 +36,7 @@ public class VehicleResource {
     }
 
     @GET
+    @RolesAllowed({"ADMIN", "FUNCIONARIO", "USUARIO"})
     public Response getAll(){
     //consultar veículos da frota com seus detalhes e status
 
@@ -88,6 +91,7 @@ public class VehicleResource {
 
     @DELETE
     @Path("/{id}")
+    @RolesAllowed({"ADMIN"})
     @Transactional
     public Response deleteById(@PathParam("id") Long id) {
         Vehicle vehicle = Vehicle.findById(id);
